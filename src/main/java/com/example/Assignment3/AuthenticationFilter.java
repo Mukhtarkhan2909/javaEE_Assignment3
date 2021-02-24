@@ -8,33 +8,34 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class AuthenticationFilter implements Filter {
-
-    private ServletContext context;
+    FilterConfig config;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        this.context = filterConfig.getServletContext();
-        this.context.log("AuthenticationFilter initialized");
+        this.config = filterConfig;
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
+        PrintWriter out = servletResponse.getWriter();
 
-        HttpSession session = request.getSession(false);
+        String password = servletRequest.getParameter("password");
+        String s = config.getInitParameter("construction");
 
-        if (session == null) {   //checking whether the session exists
-            this.context.log("Unauthorized access request");
-            response.sendRedirect(request.getContextPath() + "login.jsp");
-        } else {
-            // pass the request along the filter chain
-            filterChain.doFilter(request, response);
+        if(s.equals("yes")){
+            out.print("<h1>This page is under construction</h1>");
+        }
+        else if(password.equals("admin")){
+            filterChain.doFilter(servletRequest, servletResponse);
+        }
+        else{
+            out.print("<font color=red>Admin password is wrong.</font>");
+            RequestDispatcher rd = servletRequest.getRequestDispatcher("login.jsp");
+            rd.include(servletRequest, servletResponse);
         }
     }
 
     @Override
     public void destroy() {
-
     }
 }

@@ -25,5 +25,6 @@
     <h4>Hello!</h4>
     <h4>Email: <%=email%> was successfully logged in.</h4>
     <h4>Session ID: <%=sessionID%></h4>
+    <a class="btn btn-primary" href="lifetime" role="button">lifetime</a>
 </div>
 <%@ include file="footer.jsp"  %>
